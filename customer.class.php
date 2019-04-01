@@ -234,7 +234,7 @@ class Customer {
         echo "
             </head>
             <body>
-			<a href='https://github.com/abpopko/Prog3'>Github</a>
+			<a href='https://github.com/abpopko/PopkoProg4'>Github</a>
                 <div class='container'>
                     <p class='row'>
                         <h3>$this->title" . "s" . "</h3>
@@ -339,7 +339,7 @@ class Customer {
         echo "
             </head>
             <body>
-			<a href='https://github.com/abpopko/Prog3'>Github</a>";
+			<a href='https://github.com/abpopko/PopkoProg4'>Github</a>";
 		echo '<body><div class="container"><div class="span10 offset1"><div class="row"><h3>Login</h3></div>';
 		echo '<form class="form-horizontal" method="post"><div class="control-group"><label class="control-label">Username (Email)</label><div class="controls"><input name="username" type="text"  placeholder="me@email.com" required></div></div>';
 		echo '<div class="control-group"><label class="control-label">Password</label><div class="controls"><input name="password" type="password" placeholder="password" required></div></div>';
@@ -434,7 +434,7 @@ class Customer {
         echo "
             </head>
             <body>
-			<a href='https://github.com/abpopko/Prog3'>Github</a>";
+			<a href='https://github.com/abpopko/PopkoProg4'>Github</a>";
 		echo '<div class="container"><div class="span10 offset1"><div class="row"><h3>Register</h3></div>';
 		echo '<form class="form-horizontal"  method="post">';
 		
