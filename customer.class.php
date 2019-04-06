@@ -219,6 +219,74 @@ class Customer {
         }
         return $valid;
     } // end function fieldsAllValid() 
+	
+	// upload file to directory and rename
+  public static function uploadFile() {
+  	global $file, $file_name, $file_tmp_name, $file_size, $file_error, $file_type, $file_ext, $file_actual_ext;
+
+    $id = $_GET['id'];
+
+    if (!empty($_POST)) {
+      $file = $_FILES['file'];
+
+      $file_name     = $_FILES['file']['name'];
+      $file_tmp_name = $_FILES['file']['tmp_name'];
+      $file_size     = $_FILES['file']['size'];
+      $file_error    = $_FILES['file']['error'];
+      $file_type     = $_FILES['file']['type'];
+
+      // get file extension
+      $file_ext = explode('.', $file_name);
+      $file_actual_ext = strtolower(end($file_ext));
+
+      // allowed extenstions
+      $allowed_ext = array('jpg', 'png', 'gif');
+
+      // upload if no errors
+      if (in_array($file_actual_ext, $allowed_ext)) {
+        if ($file_error === 0) {
+          if ($file_size < 1000000) {
+            $file_name_new = "profile_picture" . $id . "." . $file_actual_ext;
+            $file_destination = '../uploadedPictures/' . $file_name_new;
+            move_uploaded_file($file_tmp_name, $file_destination);
+
+            // change status to 1
+            $pdo = Profile_Image::connect();
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $sql = 'UPDATE profile_images SET status = ? WHERE user_id = ?';
+            $q = $pdo->prepare($sql);
+            $q->execute(array(1, $id));
+            Profile_Image::disconnect();
+
+          } else {
+            echo "Your file is too big.";
+          }
+        } else {
+          echo "There was an error uploading your file.";
+        }
+      } else {
+        echo "You cannot upload files of this type.";
+      }
+    }
+  }
+  
+   // display user's profile image
+  public static function displayProfileImage() {
+    $id = $_SESSION['image']['user_id'];
+    $ext = $_SESSION['extension'];
+
+    // display default or uploaded image
+    if (is_null($_SESSION['image'])) {
+      echo "Image is null. ";
+    } else {
+      if ($_SESSION['image']['status'] == 0) { // display default image
+        echo "<img src='uploadedPictures/defaultPicture.jpg'>";
+      }
+      if ($_SESSION['image']['status'] == 1) { // display uploaded, selected image
+        echo "<img height='auto' width='300px' src='uploadedPictures" . $id . "." . $ext . "'>";
+      }
+    }
+  }
     
     function list_records() {
         echo "<!DOCTYPE html>
@@ -257,18 +325,15 @@ class Customer {
                             <tbody>
                     ";
         $pdo = Database::connect();
+		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $sql = "SELECT * FROM $this->tableName ORDER BY id DESC";
         foreach ($pdo->query($sql) as $row) {
             echo "<tr>";
-			//*****************
-			//doesnt work properly
-			echo "<td>";
-			echo "<img height='auto' width='50%'
-  src='data:image/jpeg;base64,"
-  . base64_encode($row["profile_picture"]) . "'>";
-			echo "</td>";
-			//*****************
-            echo "<td>". $row["name"] . "</td>";
+			
+			//Picture code goes here
+			echo "<td><img  width='100px' src='uploadedPictures/defaultPicture.jpg' /></td>";
+            
+			echo "<td>". $row["name"] . "</td>";
             echo "<td>". $row["email"] . "</td>";
             echo "<td>". $row["mobile"] . "</td>";
             echo "<td width=250>";
